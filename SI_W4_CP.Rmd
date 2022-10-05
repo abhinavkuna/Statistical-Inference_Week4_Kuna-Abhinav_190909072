@@ -1,0 +1,92 @@
+---
+title: "STATISTICAL INFERENCE_WEEK 4 PROJECT"
+author: "kuna Abhinav 190909072"
+date: "2022-10-05"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+The purpose of this data analysis is to investigate the exponential distribution
+and compare it to the Central Limit Theorem.
+
+
+## Simulations
+Set the simulation variables
+```{r}
+ECHO=TRUE
+set.seed(1337)
+lambda = 0.2
+exponentials = 40
+```
+
+Run Simulations with variables
+```{r}
+simMean = NULL
+for (i in 1 : 1000) simMean = c(simMean, mean(rexp(exponentials, lambda)))
+```
+
+
+## Sample Mean versus Theoretical Mean
+#### Sample Mean
+Calculating the mean from the simulations 
+```{r}
+mean(simMean)
+```
+
+#### Theoretical Mean
+The theoretical mean of an exponential distribution is lambda^-1.
+```{r}
+lambda^-1
+```
+
+#### Comparison
+There is only a slight difference between the simulations sample mean and the 
+exponential distribution theoretical mean.
+```{r}
+abs(mean(simMean)-lambda^-1)
+```
+
+
+## Sample Variance versus Theoretical Variance
+#### Sample Variance
+Calculating the variance from the simulation means with give the sample
+variance.
+```{r}
+var(simMean)
+```
+
+#### Theoretical Variance
+theoretical variance of exponential distribution  
+(lambda * sqrt(n))^-2.
+```{r}
+(lambda * sqrt(exponentials))^-2
+```
+
+#### Comparison between Sample and Theoretical Variance
+There is only a slight difference between the simulations sample variance and 
+the exponential distribution theoretical variance.
+```{r}
+abs(var(simMean)-(lambda * sqrt(exponentials))^-2)
+```
+
+
+## Distribution using a Density Histogram
+This is a density histogram of the 1000 simulations. There is an overlay with a 
+normal distribution that has a mean of lambda^-1 and standard deviation of 
+(lambda*sqrt(n))^-1, the theoretical normal distribution for the simulations.
+```{r}
+library(ggplot2)
+ggplot(data.frame(y=simMean), aes(x=y)) + 
+  geom_histogram(aes(y=..density..), binwidth=0.2, fill="yellow", 
+                 color="black") +
+  stat_function(fun=dnorm, arg=list(mean=lambda^-1, 
+                                    sd=(lambda*sqrt(exponentials))^-1), 
+                size=2) +
+  labs(title="Plot of the Simulations", x="Simulation Mean")
+```{r}
